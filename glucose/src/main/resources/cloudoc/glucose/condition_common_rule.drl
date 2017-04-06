@@ -1,0 +1,78 @@
+package cloudoc.glucose;
+
+rule 'common 糖尿病'
+	ruleflow-group 'common-glucose-condition'
+	when
+		$r : Patient( isDiabetes == true, dm_type == 0 )
+	then
+		Condition c = new Condition();
+		c.setCode("A");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule 'common 1型糖尿病'
+	ruleflow-group 'common-glucose-condition'
+	when
+		$r : Patient( isDiabetes == true, dm_type == 1 )
+	then
+		Condition c = new Condition();
+		c.setCode("B");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule 'common 2型糖尿病'
+	ruleflow-group 'common-glucose-condition'
+	when
+		$r : Patient( isDiabetes == true, dm_type == 2 )
+	then
+		Condition c = new Condition();
+		c.setCode("C");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule 'common 妊娠糖尿病	'
+	ruleflow-group 'common-glucose-condition'
+	when
+		$r : Patient( isDiabetes == true, dm_type == 3 )
+	then
+		Condition c = new Condition();
+		c.setCode("D");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule 'common 其它类型糖尿病'
+	ruleflow-group 'common-glucose-condition'
+	when
+		$r : Patient( isDiabetes == true, dm_type == 4 )
+	then
+		Condition c = new Condition();
+		c.setCode("E");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule 'common 冠心病 '
+	ruleflow-group 'common-glucose-condition'
+	when
+		$r : Patient(isAcs == true )
+	then
+		Condition c = new Condition();
+		c.setCode("b");
+		c.setGroup("common");
+		insert(c);
+end
+
+rule 'common isHypertension'
+	ruleflow-group 'common-glucose-condition'
+	when
+		$r : Patient( isHypertension == true )
+	then
+		Condition c = new Condition();
+		c.setCode("r");
+		c.setGroup("common");
+		insert(c);
+end

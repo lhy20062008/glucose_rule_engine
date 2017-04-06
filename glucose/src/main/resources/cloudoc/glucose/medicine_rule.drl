@@ -1,0 +1,111 @@
+package cloudoc.glucose;
+
+rule 'antidiabetic is true'
+    ruleflow-group 'medicine'
+    when
+        $m : Medicine( antidiabetic == true )
+    then
+        Condition c = new Condition();
+		c.setCode("AJ");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule 'insulin is true'
+    ruleflow-group 'medicine'
+    when
+        $m : Medicine(insuline == true)
+    then
+        Condition c = new Condition();
+        c.setCode("AI");
+        c.setGroup("week");
+        insert(c);
+end
+
+rule 'other ways to hypoglycemic'
+    ruleflow-group 'medicine'
+    when
+        $m : Medicine(insuline == false, antidiabetic == false)
+    then
+        Condition c = new Condition();
+        c.setCode("AK");
+        c.setGroup("week");
+        insert(c);
+end
+
+rule 'insuline count == 1'
+    ruleflow-group 'medicine'
+    when
+        $m : Medicine(insulineCount == 1, insuline == true)
+    then
+        Condition c = new Condition();
+        c.setCode("A3");
+        c.setGroup("week");
+        insert(c);
+end
+
+rule 'insuline count == 2'
+    ruleflow-group 'medicine'
+    when
+        $m : Medicine(insulineCount == 2, insuline == true)
+    then
+        Condition c = new Condition();
+        c.setCode("A2");
+        c.setGroup("week");
+        insert(c);
+end
+
+rule 'insuline count > 2'
+    ruleflow-group 'medicine'
+    when
+        $m : Medicine(insulineCount > 2, insuline == true)
+    then
+        Condition c = new Condition();
+        c.setCode("A1");
+        c.setGroup("week");
+        insert(c);
+end
+
+rule 'fbgNormalCount / fbgCount >= 0.6 '
+    ruleflow-group 'medicine'
+    when
+        $s : Statistic(fbgNormalCount.doubleValue() / fbgCount >= 0.6)
+    then
+        Condition c = new Condition();
+        c.setCode("B1");
+        c.setGroup("week");
+        insert(c);
+end
+
+rule 'fbgNormalCount / fbgCount < 0.6 '
+    ruleflow-group 'medicine'
+    when
+        $s : Statistic(fbgNormalCount.doubleValue() / fbgCount < 0.6)
+    then
+        Condition c = new Condition();
+        c.setCode("B2");
+        c.setGroup("week");
+        insert(c);
+end
+
+rule 'twoHpgNormalCount / twoHpgCount >= 0.6 '
+    ruleflow-group 'medicine'
+    when
+        $s : Statistic(twoHpgNormalCount.doubleValue() / twoHpgCount >= 0.6)
+    then
+        Condition c = new Condition();
+        c.setCode("B3");
+        c.setGroup("week");
+        insert(c);
+end
+
+rule 'twoHpgNormalCount / twoHpgCount < 0.6 '
+    ruleflow-group 'medicine'
+    when
+        $s : Statistic(twoHpgNormalCount.doubleValue() / twoHpgCount < 0.6)
+    then
+        Condition c = new Condition();
+        c.setCode("B4");
+        c.setGroup("week");
+        insert(c);
+end

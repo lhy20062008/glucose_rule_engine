@@ -1,0 +1,52 @@
+package cloudoc.glucose;
+
+rule "statistic rule"
+    ruleflow-group "statistic"
+    no-loop
+	when
+	    $s : Statistic()
+	    Number( $fbgCount : intValue )
+	        from accumulate(Record(acktype == 0), count())
+		Number( $fbgNormalCount : intValue )
+		    from accumulate(Record(acktype == 0, value > 3.9, value < target.fpg_upper), count())
+		Number( $twoHpgCount : intValue )
+	        from accumulate(Record(acktype in (1,3,5)), count())
+		Number( $twoHpgNormalCount : intValue )
+		    from accumulate(Record(acktype in (1,3,5), value > 3.9, value < target.two_hpg_upper), count())
+		Number( $hypoglycemiaCount : intValue )
+		    from accumulate(Record(value <= 3.9), count())
+		Number( $hyperglycemiaCount : intValue )
+		    from accumulate(Record(value > 16.7), count())
+		accumulate( Record( acktype == 0, $value : value ),
+                        $averageFBG : average( $value ) )
+        accumulate( Record( acktype in (1,3,5), $value : value ),
+                        $averageTwoHpg : average( $value ) )
+        Number( $fbgVariance : doubleValue )
+            from accumulate( Record( acktype == 0, $value : value ),
+                    init( double variance = 0.0; ),
+                    action( variance +=  ($value - $averageFBG.doubleValue())*($value - $averageFBG.doubleValue()); ),
+                    reverse( variance -= ($value - $averageFBG.doubleValue())*($value - $averageFBG.doubleValue()); ),
+                    result( new Double( variance / $fbgCount ) ) )
+        Number( $twoHpgVariance : doubleValue )
+            from accumulate( Record( acktype in (1,3,5), $value : value ),
+                    init( double variance = 0.0; ),
+                    action( variance +=  ($value - $averageTwoHpg.doubleValue())*($value - $averageTwoHpg.doubleValue()); ),
+                    reverse( variance -= ($value - $averageTwoHpg.doubleValue())*($value - $averageTwoHpg.doubleValue()); ),
+                    result( new Double( variance / $twoHpgCount ) ) )
+		    
+	then
+	    modify($s){
+	        setFbgCount( $fbgCount ),
+	        setFbgNormalCount( $fbgNormalCount ),
+	        setTwoHpgCount( $twoHpgCount ),
+	        setTwoHpgNormalCount( $twoHpgNormalCount ),
+	        setHypoglycemiaCount($hypoglycemiaCount),
+	        setHyperglycemiaCount($hyperglycemiaCount),
+	        setAverageFBG($averageFBG.doubleValue()),
+	        setAverageTwoHpg($averageTwoHpg.doubleValue()),
+	        setFbgVariance($fbgVariance),
+	        setFbgStandardDeviation( Math.sqrt($fbgVariance) ),
+	        setTwoHpgVariance($twoHpgVariance),
+	        setTwoHpgStandardDeviation( Math.sqrt($twoHpgVariance) );
+	    }
+end

@@ -1,0 +1,208 @@
+// 已实现的条件规则：
+// A B C D E F G H
+
+package cloudoc.glucose;
+global cloudoc.glucose.Target target
+rule '血糖<=3.9mmol/l, level=1'
+	ruleflow-group 'single-glucose-condition'
+	no-loop
+	when
+		$r : Record( value <= 3.9 )
+	then
+		Condition c = new Condition();
+		c.setCode("A");
+		c.setGroup('single');
+		insert(c);
+end
+
+rule '血糖（>3.9mmol/l，但<=4.4mmol/l, acktype is 0 level=2'
+	ruleflow-group 'single-glucose-condition'
+	no-loop
+	when
+		$r : Record( value > 3.9, value <= target.fpg_lower, acktype == 0)
+	then
+		Condition c = new Condition();
+		c.setCode("B");
+		c.setGroup('single');
+		insert(c);
+end
+
+rule '血糖（>3.9mmol/l，但<=4.4mmol/l, acktype is 1, level=2'
+	ruleflow-group 'single-glucose-condition'
+	no-loop
+	when
+		$r : Record( value > 3.9, value <= target.two_hpg_lower, acktype != 0)
+	then
+		Condition c = new Condition();
+		c.setCode("B");
+		c.setGroup('single');
+		insert(c);
+end
+
+rule '空腹血糖（>4.4mmol/l，但<7.0mmol/l）'
+	ruleflow-group 'single-glucose-condition'
+	no-loop
+	when
+		$r : Record( acktype == 0, value > target.fpg_lower, value < target.fpg_upper )
+	then
+		Condition c = new Condition();
+		c.setCode("C");
+		c.setGroup('single');
+		insert(c);
+end
+
+rule '非空腹血糖（>4.4mmol/l，但<10.0mmol/l'
+	ruleflow-group 'single-glucose-condition'
+	no-loop
+	when
+		$r : Record( acktype != 0, value > target.two_hpg_lower, value < target.two_hpg_upper )
+	then
+		Condition c = new Condition();
+		c.setCode("C");
+		c.setGroup("single");
+		insert(c);
+end
+
+rule '空腹血糖（>=7.0mmol/l，但<16.7mmol/l）'
+	ruleflow-group 'single-glucose-condition'
+	no-loop
+	when
+		$r : Record( acktype == 0, value >= target.fpg_upper, value <= 16.7 )
+	then
+		Condition c = new Condition();
+		c.setCode("E");
+		c.setGroup('single');
+		insert(c);
+end
+
+rule '非空腹血糖（>=10.0mmol/l，但<=16.7mmol/l）'
+    ruleflow-group 'single-glucose-condition'
+    no-loop
+	when
+		$r : Record( acktype != 0, value >= target.two_hpg_upper, value <= 16.7 )
+	then
+		Condition c = new Condition();
+		c.setCode("E");
+		c.setGroup("single");
+		insert(c);
+end
+
+rule '空腹血糖（>=16.7mmol/l）'
+    ruleflow-group 'single-glucose-condition'
+    no-loop
+	when
+		$r : Record( value > 16.7 )
+	then
+		Condition c = new Condition();
+		c.setCode("G");
+		c.setGroup('single');
+		insert(c);
+end
+
+rule 'acktype type is 0'
+    ruleflow-group 'single-glucose-condition'
+    no-loop
+    when
+        $r : Record( acktype == 0 )
+    then
+        Condition c = new Condition();
+        c.setCode('A0');
+        c.setGroup('single');
+        insert(c);
+end
+
+rule 'acktype type is 1'
+    ruleflow-group 'single-glucose-condition'
+    no-loop
+    when
+        $r : Record( acktype == 1 )
+    then
+        Condition c = new Condition();
+        c.setCode('A1');
+        c.setGroup('single');
+        insert(c);
+end
+
+rule 'acktype type is 2'
+    ruleflow-group 'single-glucose-condition'
+    no-loop
+    when
+        $r : Record( acktype == 2 )
+    then
+        Condition c = new Condition();
+        c.setCode('A2');
+        c.setGroup('single');
+        insert(c);
+end
+
+rule 'acktype type is 3'
+    ruleflow-group 'single-glucose-condition'
+    no-loop
+    when
+        $r : Record( acktype == 3 )
+    then
+        Condition c = new Condition();
+        c.setCode('A3');
+        c.setGroup('single');
+        insert(c);
+end
+
+rule 'acktype type is 4'
+    ruleflow-group 'single-glucose-condition'
+    no-loop
+    when
+        $r : Record( acktype == 4 )
+    then
+        Condition c = new Condition();
+        c.setCode('A4');
+        c.setGroup('single');
+        insert(c);
+end
+
+rule 'acktype type is 5'
+    ruleflow-group 'single-glucose-condition'
+    no-loop
+    when
+        $r : Record( acktype == 5 )
+    then
+        Condition c = new Condition();
+        c.setCode('A5');
+        c.setGroup('single');
+        insert(c);
+end
+
+rule 'acktype type is 6'
+    ruleflow-group 'single-glucose-condition'
+    no-loop
+    when
+        $r : Record( acktype == 6 )
+    then
+        Condition c = new Condition();
+        c.setCode('A6');
+        c.setGroup('single');
+        insert(c);
+end
+
+rule 'acktype type is 7'
+    ruleflow-group 'single-glucose-condition'
+    no-loop
+    when
+        $r : Record( acktype == 7 )
+    then
+        Condition c = new Condition();
+        c.setCode('A7');
+        c.setGroup('single');
+        insert(c);
+end
+
+rule 'acktype type is 8'
+    ruleflow-group 'single-glucose-condition'
+    no-loop
+    when
+        $r : Record( acktype == 8 )
+    then
+        Condition c = new Condition();
+        c.setCode('A8');
+        c.setGroup('single');
+        insert(c);
+end

@@ -1,0 +1,4 @@
+package cloudoc.glucose;
+
+global cloudoc.glucose.Target target;
+global cloudoc.glucose.Patient patient;

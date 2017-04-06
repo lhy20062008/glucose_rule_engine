@@ -1,0 +1,71 @@
+package cloudoc.glucose;
+global cloudoc.glucose.Patient patient
+rule 'dm_type = type_1'
+    ruleflow-group "follow_up"
+	when
+		$p : Patient( dm_type == 1)
+	then
+	    Condition c = new Condition();
+		c.setCode("A");
+		insert(c);
+end
+
+rule "dm_type=type_2"
+    ruleflow-group "follow_up"
+	when
+		$p : Patient( dm_type == 2 || (isDiabetes == true && dm_type == 0 ) || dm_type == 4 )
+	then
+	    Condition c = new Condition();
+		c.setCode("B1");
+		insert(c);
+end
+
+rule "dm_type=pregnancy"
+    ruleflow-group "follow_up"
+	when
+		$p : Patient( dm_type == 3 )
+	then
+	    Condition c = new Condition();
+		c.setCode("C");
+		insert(c);
+end
+
+rule "gbgCount >= 1 && 达标率<0.6, diabetes and dm_type is 2"
+    ruleflow-group "follow_up"
+	when
+		$s : Statistic(fbgCount >= 1, fbgNormalCount.doubleValue() / fbgCount < 0.6, patient.isDiabetes == true, patient.dm_type == 2)
+	then
+	    Condition c = new Condition();
+		c.setCode("D1");
+		insert(c);
+end
+
+rule "twoHpgCount >= 1 && fbgNormalCount / twoHpgCount < 0.6, diabetes and dm_type is 2 "
+    ruleflow-group "follow_up"
+	when
+		$s : Statistic(twoHpgCount >= 1,  twoHpgNormalCount.doubleValue() / twoHpgCount < 0.6, patient.isDiabetes == true, patient.dm_type == 2)
+	then
+	    Condition c = new Condition();
+		c.setCode("E1");
+		insert(c);
+end
+
+rule "hypoglycemiaCount >= 1, diabetes and dm_type is 1,2"
+    ruleflow-group "follow_up"
+	when
+		$s : Statistic(hypoglycemiaCount >= 1, patient.isDiabetes == true, patient.dm_type in (1,2))
+	then
+	    Condition c = new Condition();
+		c.setCode("F1");
+		insert(c);
+end
+
+rule 'bmi >= 24'
+    ruleflow-group 'follow_up'
+    when
+        $e : Emr(bmi >= 24)
+    then
+        Condition c = new Condition();
+		c.setCode("G1");
+		insert(c);
+end

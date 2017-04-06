@@ -1,0 +1,155 @@
+package cloudoc.glucose;
+global cloudoc.glucose.Target target
+rule 'sport_time <= 150min'
+    ruleflow-group 'emr'
+    when
+        $e : Emr(sport_time <= 150)
+    then
+        Condition c = new Condition();
+		c.setCode("g");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule 'sport_time >= 150min'
+    ruleflow-group 'emr'
+    when
+        $e : Emr(sport_time > 150)
+    then
+        Condition c = new Condition();
+		c.setCode("f");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule 'bmi < 18.5'
+    ruleflow-group 'emr'
+    when
+        $e : Emr(bmi < 18.5)
+    then
+        Condition c = new Condition();
+		c.setCode("e");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '18.5 <= bmi <= 24'
+    ruleflow-group 'emr'
+    when
+        $e : Emr(bmi >= 18.5, bmi <= 24)
+    then
+        Condition c = new Condition();
+		c.setCode("d");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule 'bmi > 24'
+    ruleflow-group 'emr'
+    when
+        $e : Emr(bmi > 24)
+    then
+        Condition c = new Condition();
+		c.setCode("c");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule 'hba1c is empty'
+    ruleflow-group 'emr'
+    when
+        $e : Emr(hba1c == -1)
+    then
+        Condition c = new Condition();
+        c.setCode("Y");
+        c.setGroup('week');
+        insert(c);
+end
+
+rule 'hba1c < 7.0'
+    ruleflow-group 'emr'
+    when
+        $e : Emr(hba1c < target.hba1c)
+    then
+        Condition c = new Condition();
+        c.setCode("W");
+        c.setGroup('week');
+        insert(c);
+end
+
+rule 'hba1c is >= 7.0'
+    ruleflow-group 'emr'
+    when
+        $e : Emr(hba1c >= target.hba1c)
+    then
+        Condition c = new Condition();
+        c.setCode("X");
+        c.setGroup('week');
+        insert(c);
+end
+
+rule 'smoke'
+	ruleflow-group 'emr'
+	when
+		$e : Emr( smoke == true )
+	then
+		Condition c = new Condition();
+		c.setCode("j");
+		c.setGroup("common");
+		insert(c);
+end
+
+rule 'no smoke'
+	ruleflow-group 'emr'
+	when
+		$e : Emr( smoke == false )
+	then
+		Condition c = new Condition();
+		c.setCode("k");
+		c.setGroup("common");
+		insert(c);
+end
+
+rule 'drink = 1'
+	ruleflow-group 'emr'
+	when
+		$e : Emr( drink == 1 )
+	then
+		Condition c = new Condition();
+		c.setCode("l");
+		c.setGroup("common");
+		insert(c);
+end
+
+rule 'drink = 0'
+	ruleflow-group 'emr'
+	when
+		$e : Emr( drink == 0 )
+	then
+		Condition c = new Condition();
+		c.setCode("m");
+		c.setGroup("common");
+		insert(c);
+end
+
+rule 'drink = 2'
+	ruleflow-group 'emr'
+	when
+		$e : Emr( drink == 2 )
+	then
+		Condition c = new Condition();
+		c.setCode("o");
+		c.setGroup("common");
+		insert(c);
+end
+
+rule 'drink > 2'
+	ruleflow-group 'emr'
+	when
+		$e : Emr( drink > 2 )
+	then
+		Condition c = new Condition();
+		c.setCode("p");
+		c.setGroup("common");
+		insert(c);
+end

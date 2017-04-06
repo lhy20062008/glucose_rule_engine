@@ -1,0 +1,207 @@
+// 已实现的条件规则：
+// A F G H I J K L M O P N Q R S T U V
+
+package cloudoc.glucose;
+global cloudoc.glucose.Target target
+
+rule '空腹血糖监测次数+餐后2小时血糖监测次数<=2'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(fbgCount + twoHpgCount <= 2)
+	then
+		Condition c = new Condition();
+		c.setCode("F");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '空腹血糖监测次数+餐后2小时血糖监测次数>2'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(fbgCount + twoHpgCount > 2)
+	then
+		Condition c = new Condition();
+		c.setCode("G");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '空腹血糖监测次数>2'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(fbgCount > 2)
+	then
+		Condition c = new Condition();
+		c.setCode("H");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '空腹血糖监测次数<=2'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(fbgCount <= 2)
+	then
+		Condition c = new Condition();
+		c.setCode("I");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '餐后2小时血糖监测次数>2'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(twoHpgCount > 2)
+	then
+		Condition c = new Condition();
+		c.setCode("J");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '餐后2小时血糖监测次数<=2'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s :Statistic(twoHpgCount <= 2)
+	then
+		Condition c = new Condition();
+		c.setCode("K");
+		c.setGroup("week");
+		insert(c);
+end
+
+
+rule '平均血糖值（空腹）/方差>=2'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(averageFBG / fbgVariance >= 2.0)
+	then
+		Condition c = new Condition();
+		c.setCode("L");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '平均血糖值（空腹）/方差<2'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(averageFBG / fbgVariance < 2.0)
+	then
+		Condition c = new Condition();
+		c.setCode("M");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '平均血糖值（餐后2小时）/方差<2'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(averageTwoHpg / twoHpgVariance < 2.0)
+	then
+		Condition c = new Condition();
+		c.setCode("O");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '平均血糖值（餐后2小时）/方差>=2'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(averageTwoHpg / twoHpgVariance >= 2.0)
+	then
+		Condition c = new Condition();
+		c.setCode("N");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '平均血糖值（空腹）（>3.9且<7mmol/l）'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(averageFBG > 3.9, averageFBG < target.fpg_upper)
+	then
+		Condition c = new Condition();
+		c.setCode("P");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '平均血糖值（空腹）（>=7且<=11.1mmol/l）'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(averageFBG >= target.fpg_upper, averageFBG <= 11.1)
+	then
+		Condition c = new Condition();
+		c.setCode("Q");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '平均血糖值（空腹）（>11.1mmol/l）'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(averageFBG > 11.1)
+	then
+		Condition c = new Condition();
+		c.setCode("R");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '平均血糖值（餐后2小时）（>3.9且<10mmol/l）'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(averageTwoHpg > 3.9, averageTwoHpg < target.two_hpg_upper)
+	then
+		Condition c = new Condition();
+		c.setCode("S");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '平均血糖值（餐后2小时）（>=10mmol/l）'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(averageTwoHpg >= target.two_hpg_upper)
+	then
+		Condition c = new Condition();
+		c.setCode("T");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '低血糖次数>=1'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(hypoglycemiaCount >= 1)
+	then
+		Condition c = new Condition();
+		c.setCode("U");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '低血糖次数=0'
+	ruleflow-group 'week-glucose-condition'
+	when
+		$s : Statistic(hypoglycemiaCount == 0)
+	then
+		Condition c = new Condition();
+		c.setCode("V");
+		c.setGroup("week");
+		insert(c);
+end
+
+rule '高血糖次数 > 0'
+    ruleflow-group 'week-glucose-condition'
+    when
+        $s : Statistic(hyperglycemiaCount >= 1)
+    then
+        Condition c = new Condition();
+        c.setCode("p");
+        c.setGroup("week");
+        insert(c);
+end
+
+
+
